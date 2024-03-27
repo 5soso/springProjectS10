@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.javaProjectS10.dao.ComplaintDAO">
+	
+	<select id="getComplaintList" resultType="com.spring.javaProjectS10.vo.ComplaintVO">
+		<!-- select c.*, m.*, r.content from complaint c, member m, review r where c.mid = m.mid and m.mid = r.mid; -->
+		select * from complaint order by idx desc;
+	</select>
+	
+	
+	
+	<insert id="setReviewComplaintInput">
+		insert into complaint values (default,#{vo.part},#{vo.partIdx},#{vo.mid},#{vo.complaint});
+	</insert>
+  
+</mapper>

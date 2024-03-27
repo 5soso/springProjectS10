@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.javaProjectS10.dao.ProductDAO">
+
+	<select id="totRecCnt" resultType="int">
+		<if test='part == "ALL"'>
+	 		select count(*) from product;
+	 	</if>
+	  <if test='part != "ALL"'> 
+	 		select count(*) from product product, categoryMiddle midd, categorySub s
+	 		where product.categoryMiddleCode=midd.categoryMiddleCode and midd.categoryMiddleCode = #{part} 
+	 		and product.categorySubCode=s.categorySubCode;
+	 	</if>
+	</select>
+	
+	<select id="getProductList" resultType="com.spring.javaProjectS10.vo.ProductVO">
+		<if test='part == "ALL"'>
+	 		select p.*, s.categorySubName from product p, categorySub s 
+	 		where p.categorySubCode=s.categorySubCode order by p.idx desc limit #{startIndexNo},#{pageSize};
+	 	</if>
+	   <if test='part != "ALL"'> 
+	 		select product.*, midd.categoryMiddleName, s.categorySubName from product product, categoryMiddle midd, categorySub s
+	 		where product.categoryMiddleCode=midd.categoryMiddleCode and midd.categoryMiddleCode = #{part} 
+	 		and product.categorySubCode=s.categorySubCode order by product.idx desc limit #{startIndexNo},#{pageSize};
+	 	</if>
+	</select>
+
+	<select id="getCategoryMiddleOne" resultType="com.spring.javaProjectS10.vo.ProductVO">
+		select * from categoryMiddle 
+		where categoryMiddleCode = #{vo.categoryMiddleCode} and categoryMiddleName = #{vo.categoryMiddleName};
+	</select>
+	
+	<select id="getCategoryMiddle" resultType="com.spring.javaProjectS10.vo.ProductVO">
+		select * from categoryMiddle order by categoryMiddleCode;
+	</select>
+	
+	<select id="getCategorySubOne" resultType="com.spring.javaProjectS10.vo.ProductVO">
+		select * from categorySub where categoryMiddleCode = #{vo.categoryMiddleCode} and 
+    categorySubCode = #{vo.categorySubCode} and categorySubName = #{vo.categorySubName};
+	</select>
+	
+	<select id="getCategorySub" resultType="com.spring.javaProjectS10.vo.ProductVO">
+		select sub.*, middle.categoryMiddleCode, middle.categoryMiddleName from categorySub sub, categoryMiddle middle 
+    where sub.categoryMiddleCode=middle.categoryMiddleCode order by categorySubCode desc;
+	</select>
+
+	<select id="getCategoryProductName" resultType="com.spring.javaProjectS10.vo.ProductVO">
+		select * from product 
+    where categoryMiddleCode = #{vo.categoryMiddleCode} and categorySubCode = #{vo.categorySubCode}; 
+	</select>	
+	
+	<select id="getCategorySubName" resultType="com.spring.javaProjectS10.vo.ProductVO">
+    select * from categorySub where categoryMiddleCode = #{categoryMiddleCode}; 
+  </select>
+  
+  <select id="getProductMaxIdx" resultType="com.spring.javaProjectS10.vo.ProductVO">
+  	select * from product order by idx desc limit 1;
+  </select>
+  
+  <select id="getAdminProductList" resultType="com.spring.javaProjectS10.vo.ProductVO">
+  	select p.*, s.categorySubName from product p, categorySub s where p.categorySubCode = s.categorySubCode order by idx desc;
+  </select>
+	
+	<select id="getProductInfo" resultType="com.spring.javaProjectS10.vo.ProductVO">
+		select p.*, s.categorySubName from product p, categorySub s where p.categorySubCode = s.categorySubCode and p.idx = #{idx};
+	</select>
+	
+	<select id="getCategoryProductNameAjax" resultType="com.spring.javaProjectS10.vo.ProductVO">
+		select * from product where categoryMiddleCode = #{categoryMiddleCode} and categorySubCode = #{categorySubCode}; 
+	</select>
+	
+	<select id="getProductInfor" resultType="com.spring.javaProjectS10.vo.ProductVO">
+		select product.*, middle.categoryMiddleName, sub.categorySubName
+  	from product product, categoryMiddle middle, categorySub sub
+  	where productName=#{productName} order by idx limit 1;
+	</select>
+	
+	<select id="getProductOption" resultType="com.spring.javaProjectS10.vo.ProductOptionVO">
+		select * from productOption where productIdx = #{idx} order by idx;
+	</select>
+	
+	<select id="getOptionList" resultType="com.spring.javaProjectS10.vo.ProductOptionVO">
+  	select * from productOption where productIdx = #{productIdx} order by optionName;
+  </select>
+	
+	<select id="getOptionSame" resultType="int">
+		select count(*) from productOption where productIdx=#{productIdx} and optionName=#{optionName};
+	</select>
+	
+	<select id="getMiddleTitle" resultType="com.spring.javaProjectS10.vo.ProductVO">
+		select categoryMiddleCode from categoryMiddle group by categoryMiddleName order by categoryMiddleCode; 
+	</select>
+	
+	<!-- 
+	<select id="getProductList" resultType="com.spring.javaProjectS10.vo.ProductVO">
+		<if test='part == "ALL"'>
+	 		select * from product order by idx desc;
+	 	</if>
+	   <if test='part != "ALL"'> 
+	 		select product.*, midd.categoryMiddleName from product product, categoryMiddle midd 
+	 		where product.categoryMiddleCode=midd.categoryMiddleCode and midd.categoryMiddleCode = #{part} order by product.idx desc;
+	 	</if>
+	</select>
+	 -->
+	<!-- 
+	<select id="getProductList" resultType="com.spring.javaProjectS10.vo.ProductVO">
+		<if test='part == "ALL"'>
+	 		select p.*, s.categorySubName from product p, categorySub s where p.categorySubCode=s.categorySubCode order by p.idx desc;
+	 	</if>
+	   <if test='part != "ALL"'> 
+	 		select product.*, midd.categoryMiddleName, s.categorySubName from product product, categoryMiddle midd, categorySub s
+	 		where product.categoryMiddleCode=midd.categoryMiddleCode and midd.categoryMiddleCode = #{part} 
+	 		and product.categorySubCode=s.categorySubCode order by product.idx desc;
+	 	</if>
+	</select>
+	 -->
+	<select id="getProductShopCartOptionSearch" resultType="com.spring.javaProjectS10.vo.ProductCartVO">
+		select * from productCart where productName=#{productName} and optionName=#{optionName} and mid=#{mid};
+	</select>
+	
+	<select id="getProductCartList" resultType="com.spring.javaProjectS10.vo.ProductCartVO">
+  	select c.*, s.categorySubName from productCart c, product p, categorySub s where 
+		c.productIdx=p.idx and p.categorySubCode=s.categorySubCode
+		and mid=#{mid} order by c.idx;
+  </select>
+	
+	<select id="getOrderMaxIdx" resultType="com.spring.javaProjectS10.vo.ProductOrderVO">
+  	select max(idx) as maxIdx from productOrder;
+  </select>
+	
+  <select id="getCartIdx" resultType="com.spring.javaProjectS10.vo.ProductCartVO">
+  	select c.*, s.categorySubName from productCart c, product p, categorySub s where 
+		c.productIdx=p.idx and p.categorySubCode=s.categorySubCode
+		and c.idx = #{strIdx};
+  </select>	
+	
+	<select id="getTotalBaesongOrder" resultType="int">
+    select orderTotalPrice from productBaesong where orderIdx = #{orderIdx};
+  </select>
+
+  <select id="getAdminOrderStatus" resultType="com.spring.javaProjectS10.vo.ProductBaesongVO">
+    <if test='orderStatus == "전체"'>
+      select a.*,b.* from productOrder a join productBaesong b using(orderIdx) <![CDATA[ where date(orderDate) >= date(#{startJumun}) and date(orderDate) <= date(#{endJumun}) order by orderDate desc ]]>;
+    </if>
+    <if test='orderStatus != "전체"'>
+      select a.*,b.* from productOrder a join productBaesong b using(orderIdx) <![CDATA[ where date(orderDate) >= date(#{startJumun}) and date(orderDate) <= date(#{endJumun}) and b.orderStatus=#{orderStatus} order by orderDate desc ]]>;
+    </if>
+  </select>	
+	
+	<select id="getMyOrderStatus" resultType="com.spring.javaProjectS10.vo.ProductBaesongVO">
+		<if test="mid == '전체' and conditionOrderStatus == '전체'">
+      select o.*,b.* from productOrder o join productBaesong b using(orderIdx) where <![CDATA[ date(orderDate) >= date(#{startJumun}) and date(orderDate) <= date(#{endJumun}) order by orderDate desc ]]>;
+    </if>
+    <if test="mid == '전체' and conditionOrderStatus != '전체'">
+      select o.*,b.* from productOrder o join productBaesong b using(orderIdx) where <![CDATA[ date(orderDate) >= date(#{startJumun}) and date(orderDate) <= date(#{endJumun}) and b.orderStatus=#{conditionOrderStatus} order by orderDate desc ]]>;
+    </if>
+    <if test="mid != '전체' and conditionOrderStatus == '전체'">
+      select o.*,b.* from productOrder o join productBaesong b using(orderIdx) where b.mid = #{mid} <![CDATA[ and date(orderDate) >= date(#{startJumun}) and date(orderDate) <= date(#{endJumun}) order by orderDate desc ]]>;
+    </if>
+    <if test="mid != '전체' and conditionOrderStatus != '전체'">
+      select o.*,b.* from productOrder o join productBaesong b using(orderIdx) where b.mid = #{mid} <![CDATA[ and date(orderDate) >= date(#{startJumun}) and date(orderDate) <= date(#{endJumun}) and b.orderStatus=#{conditionOrderStatus} order by orderDate desc ]]>;
+    </if>
+	</select>
+	
+	<select id="getOrderBaesong" resultType="com.spring.javaProjectS10.vo.ProductBaesongVO">
+		select * from productBaesong where orderIdx = #{orderIdx};
+	</select>
+	
+	<select id="getWishList" resultType="com.spring.javaProjectS10.vo.WishListVO">
+		select w.*,p.*,s.categorySubName 
+			from wishList w, product p, categorySub s 
+			where w.productCode=p.productCode 
+			and p.categorySubCode=s.categorySubCode 
+			order by wishDate desc;
+	</select>
+	
+	<select id="getWishListOrder" resultType="com.spring.javaProjectS10.vo.WishListVO">
+		select w.*, p.*, s.categorySubName from wishList w, product p, categorySub s where w.productIdx=p.idx and p.categorySubCode=s.categorySubCode and w.idx = #{idx};
+	</select>
+	
+	<select id="getMainProductList" resultType="com.spring.javaProjectS10.vo.ProductOrderVO">
+		SELECT o.*, p.detail, s.categorySubName, COUNT(o.productIdx) AS productCount 
+			FROM productOrder o
+			JOIN product p ON o.productIdx = p.idx
+			JOIN categorySub s ON p.categorySubCode = s.categorySubCode
+			GROUP BY o.productIdx
+			ORDER BY productCount DESC limit 8;
+	</select>
+	
+	<select id="getProductOrderIdx" resultType="com.spring.javaProjectS10.vo.ProductOrderVO">
+		select o.*,s.categorySubName,p.productCode,p.productName,(select idx from review where orderIdx=o.orderIdx and productName=p.productName) as reviewOk from productOrder o, product p, categorySub s where o.productName=p.productName and p.categorySubCode=s.categorySubCode and o.orderIdx = #{orderIdx};
+	</select>
+	
+	<!-- 
+	<select id="getProductReview" resultType="com.spring.javaProjectS10.vo.ReviewVO">
+		select r.*,s.categorySubName,p.productCode,p.productName,p.fSName,p.mainPrice,o.optionName as orderOptionName
+		from review r, productOrder o, product p, categorySub s where r.orderIdx=o.orderIdx and o.productName=p.productName and p.categorySubCode=s.categorySubCode;
+	</select>
+	 -->
+	
+	<select id="getProductReviewSearch" resultType="com.spring.javaProjectS10.vo.ReviewVO"> <!-- 리뷰 orderIdx -->
+		select r.*,s.categorySubName,p.productCode,p.productName,p.fSName,p.mainPrice,o.optionName as orderOptionName
+		from review r, productOrder o, product p, categorySub s where r.orderIdx=o.orderIdx and o.productName=p.productName and p.categorySubCode=s.categorySubCode and
+		   (r.productName like concat('%',#{reviewSearch},'%') or r.content like concat('%',#{reviewSearch},'%'));
+	</select>
+	<!-- 
+	<select id="getProductReviewChange" resultType="com.spring.javaProjectS10.vo.ReviewVO">
+	  <if test="reviewChange == 'recent'">
+  		select r.*,s.categorySubName,p.productCode,p.productName,p.fSName,p.mainPrice,o.optionName as orderOptionName
+	  	from review r, productOrder o, product p, categorySub s where r.orderIdx=o.orderIdx and o.productName=p.productName and p.categorySubCode=s.categorySubCode
+		  order by idx desc limit #{startIndexNo},#{pageSize};
+		</if>
+	  <if test="reviewChange == 'star'">
+  		select r.*,s.categorySubName,p.productCode,p.productName,p.fSName,p.mainPrice,o.optionName as orderOptionName
+	  	from review r, productOrder o, product p, categorySub s where r.orderIdx=o.orderIdx and o.productName=p.productName and p.categorySubCode=s.categorySubCode
+		  order by reStar desc limit #{startIndexNo},#{pageSize};
+		</if>
+	</select>
+	 -->
+	<select id="getGumaeInfor" resultType="int">
+	  select sum(totalPrice) from productOrder where mid = #{mid} and <![CDATA[ datediff(now(), orderDate) < 30 ]]>;
+	</select>
+	
+	<select id="totRecCntReview" resultType="int">
+	  select count(*) from review;
+	</select>
+	<!-- 
+	<select id="getProductReview" resultType="com.spring.javaProjectS10.vo.ReviewVO">
+	  <if test="reviewChange != 'star'">
+			select r.*,s.categorySubName,p.productCode,p.productName,p.fSName,p.mainPrice,o.optionName as orderOptionName
+			from review r, productOrder o, product p, categorySub s where r.orderIdx=o.orderIdx and o.productName=p.productName and p.categorySubCode=s.categorySubCode order by idx desc limit #{startIndexNo},#{pageSize};
+		</if>
+	  <if test="reviewChange == 'star'">
+			select r.*,s.categorySubName,p.productCode,p.productName,p.fSName,p.mainPrice,o.optionName as orderOptionName
+			from review r, productOrder o, product p, categorySub s where r.orderIdx=o.orderIdx and o.productName=p.productName and p.categorySubCode=s.categorySubCode order by reStar desc limit #{startIndexNo},#{pageSize};
+		</if>
+	</select>
+	 -->  
+	<select id="getProductReview" resultType="com.spring.javaProjectS10.vo.ReviewVO">
+	  <if test="reviewChange != 'star'">
+			select r.*,
+			  (select categorySubName from categorySub s,product p where s.categorySubCode=p.categorySubCode limit 1) as categorySubName,
+			  (select fSName from product where productCode=r.productCode limit 1) as fSName,
+			  (select mainPrice from product where productCode=r.productCode limit 1) as mainPrice,
+			  (select optionName from productOrder o, productBaesong b where o.orderIdx=b.orderIdx limit 1) as orderOptionName
+			  from review r
+			  order by idx desc limit #{startIndexNo},#{pageSize};
+		</if>
+	  <if test="reviewChange == 'star'">
+			select r.*,
+			  (select categorySubName from categorySub s,product p where s.categorySubCode=p.categorySubCode limit 1) as categorySubName,
+			  (select fSName from product where productCode=r.productCode limit 1) as fSName,
+			  (select mainPrice from product where productCode=r.productCode limit 1) as mainPrice,
+			  (select optionName from productOrder o, productBaesong b where o.orderIdx=b.orderIdx limit 1) as orderOptionName
+			  from review r
+			  order by reStar desc limit #{startIndexNo},#{pageSize};
+		</if>
+	</select>
+	
+	
+	
+	<insert id="setCategoryMiddleInput">
+		insert into categoryMiddle values (#{vo.categoryMiddleCode}, #{vo.categoryMiddleName});
+	</insert>
+	
+	<insert id="setCategorySubInput">
+		insert into categorySub values (#{vo.categoryMiddleCode},#{vo.categorySubCode},#{vo.categorySubName});
+	</insert>
+	
+	<insert id="setProductInput">
+		insert into product values(#{vo.idx},#{vo.categoryMiddleCode},#{vo.categorySubCode},#{vo.productCode},#{vo.productName},#{vo.detail},#{vo.mainPrice},#{vo.fSName},#{vo.content});
+	</insert>
+	
+	<insert id="setProductOptionInput">
+		insert into productOption values (default,#{vo.productIdx},#{vo.optionName},#{vo.optionPrice});
+	</insert>
+
+	<insert id="setProductShopCartInput">
+		insert into productCart values (default,default,#{vo.mid},#{vo.productIdx},#{vo.productName},#{vo.mainPrice},#{vo.thumbImg},#{vo.optionIdx},#{vo.optionName},#{vo.optionPrice},#{vo.optionNum},#{vo.totalPrice});
+	</insert>
+
+	<insert id="setProductOrder">
+		insert into productOrder values (default,#{vo.orderIdx},#{vo.mid},#{vo.productIdx},default,#{vo.productName},#{vo.mainPrice},#{vo.thumbImg},#{vo.optionName},#{vo.optionPrice},#{vo.optionNum},#{vo.totalPrice});
+	</insert>
+
+	<insert id="setProductBaesong">
+		insert into productBaesong values (default,#{baesongVO.oIdx},#{baesongVO.orderIdx},#{baesongVO.orderTotalPrice},#{baesongVO.mid},#{baesongVO.name},#{baesongVO.address},#{baesongVO.tel},#{baesongVO.email},#{baesongVO.message},#{baesongVO.payment},#{baesongVO.payMethod},default);
+	</insert>
+	
+	<insert id="setWishListInput">
+	  insert into wishList values (default, #{mid}, #{productCode}, ${productIdx}, #{options}, default, #{totalPrice});
+	</insert>
+	
+	<insert id="setReviewInput">
+	  insert into review values (default, #{vo.mid}, #{vo.productCode}, #{vo.productName}, #{vo.orderIdx}, #{vo.content}, #{vo.dogWeight}, #{vo.dogSize}, #{vo.reImage}, #{vo.reStar}, default);
+	</insert>
+
+
+
+
+
+
+
+	<update id="setProductShopCartUpdate">
+    update productCart set optionNum=#{vo.optionNum},totalPrice=totalPrice+#{vo.totalPrice} 
+    where productName=#{vo.productName} and optionName=#{vo.optionName};
+  </update>
+	
+	<update id="setMemberPointPlus">
+		update member set point = point + #{point} where mid = #{mid};
+	</update>
+	
+	<update id="setOrderStatusUpdate">
+		update productBaesong set orderStatus = #{orderStatus} where orderIdx = #{orderIdx};
+	</update>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<delete id="setCategoryMiddleDelete">
+		delete from categoryMiddle where categoryMiddleCode = #{categoryMiddleCode};
+	</delete>
+	
+	<delete id="setCategorySubDelete">
+		delete from categorySub where categorySubCode = #{categorySubCode};
+	</delete>
+	
+	<delete id="setOptionDelete">
+		delete from productOption where idx = #{idx};
+	</delete>
+	
+	<delete id="setProductDelete">
+		delete from product where idx = #{idx};
+	</delete>
+	
+	<delete id="setProductOptionDelete">
+		delete from productOption where productIdx = #{idx};
+	</delete>
+	
+	<delete id="productCartDelete">
+		delete from productCart where idx = #{idx};
+	</delete>
+	
+	<delete id="setProductCartDeleteAll">
+		delete from productCart where idx = #{cartIdx};
+	</delete>
+	
+	<delete id="setWishDeleteOk">
+		delete from wishList where idx = ${idx};
+	</delete>
+	
+	
+</mapper>

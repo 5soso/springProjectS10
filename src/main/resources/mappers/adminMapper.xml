@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.javaProjectS10.dao.AdminDAO">
+	
+	<select id="getProductChart" resultType="com.spring.javaProjectS10.vo.ChartVO">
+		select productName,count(*) as cnt from productOrder group by productName order by cnt desc limit 5;
+	</select>
+
+
+
+  <update id="setMemberLevelCheck">
+    update member set level = #{level} where idx = #{idx};
+  </update>	
+  
+</mapper>

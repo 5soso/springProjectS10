@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.javaProjectS10.dao.MemberDAO">
+
+	<select id="getMemberIdCheck" resultType="com.spring.javaProjectS10.vo.MemberVO">
+		select * from member where mid = #{mid};
+	</select>
+	
+	<select id="getMemberTelCheck" resultType="com.spring.javaProjectS10.vo.MemberVO">
+		select *  from member where tel = #{tel};
+	</select>
+	
+	<select id="getMemberNameCheck" resultType="com.spring.javaProjectS10.vo.MemberVO">
+		select * from member where name = #{name} and email =#{email}
+	</select>
+	
+	<select id="getMemberEmailSearch" resultType="com.spring.javaProjectS10.vo.MemberVO">
+		select * from member where email = #{email};
+	</select>
+	
+	<select id="getmemberList" resultType="com.spring.javaProjectS10.vo.MemberVO">
+		select * from member order by idx desc;
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	<insert id="setMemberJoinOk">
+		insert into member values (default,#{vo.mid},#{vo.pwd},#{vo.name},#{vo.tel},#{vo.email},#{vo.address},default,default,default,default,default,default);
+	</insert>
+	
+	<insert id="setKakaoMemberInput">
+		insert into member (mid, pwd, name, email, tel, address) values (#{mid},#{pwd},#{name},#{email}, '', '');
+	</insert>
+	
+	
+	
+	
+	<update id="setMemberPasswordUpdate">
+  	update member set pwd = #{pwd} where mid = #{mid};
+  </update>
+	
+	<update id="setMemberUpdate">
+		update member 
+		set pwd=#{vo.pwd},name=#{vo.name},tel=#{vo.tel},email=#{vo.email},address=#{vo.address},birthday=#{vo.birthday} where mid = #{vo.mid};
+	</update>
+	
+	<update id="setLastDateUpdate">
+		update member set lastDate = now() where mid = #{mid};
+	</update>
+	
+	<update id="setMemberDelete">
+		update member set userCancel = 'OK' where mid = #{mid};
+	</update>
+	
+
+	
+	
+	
+	
+	
+	
+</mapper>
